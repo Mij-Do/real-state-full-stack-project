@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏢 Benisuef Real-Estate Platform (MVP)
 
-## Getting Started
+منصة عقارية مصغرة ومتكاملة (Full-Stack) مخصصة لمحافظة بني سويف، تتيح للمستخدمين عرض شققهم وعقاراتهم للبيع أو الإيجار بشكل مباشر وبدون وسيط، مع نظام تحكم ومراجعة صارم من قِبل الإدارة لضمان مصداقية الإعلانات.
 
-First, run the development server:
+المشروع مبني بمعمارية حديثة توفر أداءً فائقاً وتكلفة تشغيل صفرية، مع دعم كامل للـ SEO المحلي للمحافظة.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 التقنيات المستخدمة (Tech Stack)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+تم اختيار الأدوات بعناية لضمان أقصى أداء وقابلية للتوسع مستقبلاً (Scalability):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** Next.js 14+ (App Router) - Full-Stack Monorepo.
+- **Backend Logic:** Server Actions & Route Handlers (Serverless Architecture).
+- **Database:** MongoDB Atlas (Cloud Database).
+- **ORM:** Mongoose / Prisma.
+- **Styling & UI:** Tailwind CSS + Shadcn UI.
+- **Cloud Storage:** Cloudinary / Uploadthing (إدارة ورفع الصور بصيغة `WebP` المحسنة).
+- **Deployment:** Vercel.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 الميزات الرئيسية (Core Features)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. رحلة البائع (User-Generated Content)
+- إضافة إعلان جديد بسهولة (نوع العقار، السعر، العنوان بالتفصيل، إمكانية التفاوض، بيانات التواصل).
+- رفع حتى 5 صور للعقار مع تحجيم وضغط تلقائي للصور لضمان سرعة التصفح.
+- الإعلانات الجديدة تأخذ حالة `PENDING` تلقائياً ولا تظهر للعامة إلا بعد موافقة الإدارة.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. رحلة المشتري (تصفح سلس وسريع)
+- عرض العقارات المعتمدة فقط (`APPROVED`) في الصفحة الرئيسية.
+- نظام فلترة وسيرش متقدم ودقيق حسب: (نوع العقار: شقة/فيلا - النطاق السعري - المنطقة داخل بني سويف).
+- أزرار اتصال مباشرة ومثبتة للموبايل (اتصال هاتفي مباشر / محادثة واتساب فورية).
 
-## Deploy on Vercel
+### 3. لوحة تحكم الإدارة (Admin Dashboard)
+- **طلبات الانتظار (Pending):** مراجعة الإعلانات الجديدة وقبولها (`Approve`) لتظهر بالموقع أو رفضها وحذفها (`Decline`).
+- **إدارة المعروض:** متابعة الشقق الشغالة، وتحويل حالة العقار إلى "تم البيع" (`SOLD`) بضغطة زر.
+- **أرشيف المبيعات:** صفحة خاصة تعرض كل العقارات التي بيعت بنجاح لمتابعة الإحصائيات، مع إخفائها تلقائياً من واجهة المشترين.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗺️ مخطط مسار البيانات (System Flowchart)
+
+### مسار الإعلان والتحكم (Lifecycle of a Property):
+```text
+[بائع: أضف عقارك] ──► [حفظ في الداتابيز: PENDING] ──► [ظهور في لوحة تحكم الـ Admin]
+                                                               │
+                                       ┌───────────────────────┴───────────────────────┐
+                                       ▼ (Declined)                                    ▼ (Approved)
+                                [حذف الإعلان نهائياً]                         [تحديث الحالة: APPROVED]
+                                                                                       │
+                                                                                       ▼
+                                                                            [يظهر للمشترين في الموقع]
+                                                                                       │
+                                                                                       ▼ (عند إتمام البيع)
+                                                                            [تحديث الحالة: SOLD]
+                                                                                       │
+                                                                       ┌───────────────┴───────────────┐
+                                                                       ▼                               ▼
+                                                             [يختفي من واجهة المشترين]       [ينتقل إلى أرشيف الـ Admin]

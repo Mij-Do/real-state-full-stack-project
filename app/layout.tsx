@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { ModeToggle } from "@/components/ui/modeToggle";
+import Navbar from "@/components/navbar";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -40,7 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ModeToggle/>
+          <Navbar/>
           {children}
         </ThemeProvider>
       </body>

@@ -9,7 +9,7 @@ import { Plus } from 'lucide-react';
 
 const NAV_LINKS = [
     { title: "Home", path: "/" },
-    { title: "Dashboard", path: "/dashboard" },
+    { title: "Dashboard", path: "/admin/dashboard" },
 ] as const;
 
 

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD";
 
-export async function getPropertiesByStatus(status: PropertyStatus = "PENDING") {
+export async function getPropertiesByStatus(status: PropertyStatus = "APPROVED") {
     try {
         const properties = await prisma.property.findMany({
             where: { status },
@@ -23,19 +23,36 @@ export async function getPropertiesByStatus(status: PropertyStatus = "PENDING") 
     }
 }
 
-export async function addProperty(property: {title: string, description: string, type: string, price: number, isNegotiable: boolean, ownerName: string, ownerNumber: string, images: string[]}) {
-    await prisma.property.create({
-        data: {
-            title: property.title,
-            description: property.description,
-            type: property.type,
-            price: property.price,
-            isNegotiable: property.isNegotiable,
-            ownerName: property.ownerName,
-            ownerPhone: property.ownerNumber,
-            images: property.images,
-        }
-    })
+export async function addProperty(property: {
+    title: string;
+    description: string;
+    type: string;
+    price: number;
+    isNegotiable: boolean;
+    ownerName: string;
+    ownerNumber: string;
+    images: string[];
+}) {
+    try {
+        const newProperty = await prisma.property.create({
+            data: {
+                title: property.title,
+                description: property.description,
+                type: property.type,
+                price: property.price,
+                isNegotiable: property.isNegotiable,
+                ownerName: property.ownerName,
+                ownerPhone: property.ownerNumber,
+                images: property.images,
+            },
+        });
+
+        revalidatePath("/admin/dashboard");
+        return { success: true, data: newProperty };
+    } catch (error) {
+        console.error("Failed to add property:", error);
+        return { success: false, error: "فشل في إضافة العقار" };
+    }
 }
 
 export async function approveProperty(id: string) {

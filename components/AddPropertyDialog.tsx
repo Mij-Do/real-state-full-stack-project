@@ -202,7 +202,7 @@ export default function AddPropertyDialog() {
                             />
                         </div>
 
-                        {/* Cloudinary Images Upload */}
+                        {/* Cloudinary Images Upload  */}
                         <Controller
                             name="images"
                             control={form.control}

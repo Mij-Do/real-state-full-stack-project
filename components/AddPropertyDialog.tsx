@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { addProperty } from "@/app/actions/properties";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,7 @@ import {
     InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { formSchema, PropertyFormValues } from "@/schema";
@@ -28,7 +29,16 @@ import { Checkbox } from "./ui/checkbox";
 import SelectPropertyType from "./SelectPropertyType";
 import ImageUpload from "./ImageUpload";
 
+// دالة لمعالجة الأرقام العربية وتحويلها إلى إنجليزية
+const parseNumber = (val: string) => {
+    const englishNumbers = val.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d).toString());
+    const num = Number(englishNumbers);
+    return isNaN(num) ? 0 : num;
+};
+
 export default function AddPropertyDialog() {
+    const [open, setOpen] = useState(false);
+
     const form = useForm<PropertyFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,22 +53,30 @@ export default function AddPropertyDialog() {
         },
     });
 
+    const isSubmitting = form.formState.isSubmitting;
+
     const onSubmit = async (data: PropertyFormValues) => {
-        await addProperty({
-            title: data.title,
-            description: data.description,
-            type: data.type,
-            price: data.price,
-            isNegotiable: data.isNegotiable,
-            ownerName: data.ownerName,
-            ownerNumber: data.ownerNumber,
-            images: data.images
-        });
-        console.log(data);
-    }
+        try {
+            await addProperty({
+                title: data.title,
+                description: data.description,
+                type: data.type,
+                price: Number(data.price),
+                isNegotiable: data.isNegotiable,
+                ownerName: data.ownerName,
+                ownerNumber: data.ownerNumber,
+                images: data.images
+            });
+            
+            form.reset();
+            setOpen(false); // إغلاق النافذة بعد الإضافة بنجاح
+        } catch (error) {
+            console.error("Error adding property:", error);
+        }
+    };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger render={
                 <Button>
                     <Plus />
@@ -66,8 +84,8 @@ export default function AddPropertyDialog() {
                 </Button>
             } />
             
-            <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-                <DialogContent className="sm:max-w-sm">
+            <DialogContent className="sm:max-w-sm max-h-[90vh] overflow-y-auto">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FieldGroup>
                         {/* Title */}
                         <Controller
@@ -75,12 +93,12 @@ export default function AddPropertyDialog() {
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-rhf-demo-title">Title</FieldLabel>
+                                    <FieldLabel htmlFor="title">العنوان</FieldLabel>
                                     <Input
                                         {...field}
-                                        id="form-rhf-demo-title"
+                                        id="title"
                                         aria-invalid={fieldState.invalid}
-                                        placeholder="Title"
+                                        placeholder="مثال: شقة للبيع في المعادي"
                                         autoComplete="off"
                                     />
                                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -94,14 +112,14 @@ export default function AddPropertyDialog() {
                             control={form.control}
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-rhf-demo-description">Description</FieldLabel>
+                                    <FieldLabel htmlFor="description">الوصف</FieldLabel>
                                     <InputGroup>
                                         <InputGroupTextarea
                                             {...field}
-                                            id="form-rhf-demo-description"
+                                            id="description"
                                             placeholder="أدخل تفاصيل العقار بدقة..."
-                                            rows={6}
-                                            className="min-h-24 resize-none placeholder:text-gray"
+                                            rows={4}
+                                            className="min-h-24 resize-none"
                                             aria-invalid={fieldState.invalid}
                                         />
                                     </InputGroup>
@@ -111,13 +129,13 @@ export default function AddPropertyDialog() {
                         />
 
                         {/* Type & Price */}
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                             <Controller
                                 name="type"
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-rhf-demo-type">Type</FieldLabel>
+                                        <FieldLabel htmlFor="type">النوع</FieldLabel>
                                         <SelectPropertyType field={field}/>
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </Field>
@@ -128,15 +146,16 @@ export default function AddPropertyDialog() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-rhf-demo-price">Price</FieldLabel>
+                                        <FieldLabel htmlFor="price">السعر</FieldLabel>
                                         <Input
                                             {...field}
-                                            id="form-rhf-demo-price"
+                                            id="price"
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="Price"
+                                            placeholder="السعر"
                                             autoComplete="off"
-                                            type="number"
-                                            onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            type="text"
+                                            inputMode="numeric"
+                                            onChange={(e) => field.onChange(parseNumber(e.target.value))}
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </Field>
@@ -145,18 +164,18 @@ export default function AddPropertyDialog() {
                         </div>
 
                         {/* Owner Info */}
-                        <div className="flex items-center justify-between gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                             <Controller
                                 name="ownerName"
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-rhf-demo-ownerName">OwnerName</FieldLabel>
+                                        <FieldLabel htmlFor="ownerName">اسم المعلن</FieldLabel>
                                         <Input
                                             {...field}
-                                            id="form-rhf-demo-ownerName"
+                                            id="ownerName"
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="OwnerName"
+                                            placeholder="الاسم"
                                             autoComplete="off"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -168,12 +187,13 @@ export default function AddPropertyDialog() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-rhf-demo-ownerNumber">OwnerNumber</FieldLabel>
+                                        <FieldLabel htmlFor="ownerNumber">رقم الهاتف</FieldLabel>
                                         <Input
                                             {...field}
-                                            id="form-rhf-demo-ownerNumber"
+                                            id="ownerNumber"
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="ownerNumber"
+                                            placeholder="01xxx"
+                                            type="tel"
                                             autoComplete="off"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -206,26 +226,37 @@ export default function AddPropertyDialog() {
                             name="isNegotiable"
                             control={form.control}
                             render={({ field: {onChange, value}, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid} orientation={"horizontal"}>
-                                    <FieldLabel>Is Negotiable</FieldLabel>
-                                    <Checkbox checked={value} onCheckedChange={onChange} />
+                                <Field data-invalid={fieldState.invalid} orientation={"horizontal"} className="flex items-center gap-2 pt-2">
+                                    <Checkbox checked={value} onCheckedChange={onChange} id="isNegotiable" />
+                                    <FieldLabel htmlFor="isNegotiable" className="cursor-pointer">قابل للتفاوض</FieldLabel>
                                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                 </Field>
                             )}
                         />
                     </FieldGroup>
                     
-                    <DialogFooter>
-                        <Field orientation="horizontal">
-                            <DialogClose render={<Button variant={"destructive"}> Close </Button>} />
-                            <Button type="submit">
-                                Submit
+                    <DialogFooter className="flex flex-row justify-end gap-2 pt-4">
+                        <Button type="button" variant="secondary" onClick={() => form.reset()} disabled={isSubmitting}>
+                            إعادة ضبط
+                        </Button>
+                        <DialogClose render={
+                            <Button variant="destructive" type="button" disabled={isSubmitting}> 
+                                إلغاء 
                             </Button>
-                            <Button type="button" variant="secondary" onClick={() => form.reset()}>Reset</Button>
-                        </Field>
+                        } />
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin ml-1" />
+                                    جاري الإضافة...
+                                </>
+                            ) : (
+                                "إضافة"
+                            )}
+                        </Button>
                     </DialogFooter>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     );
 }

@@ -97,12 +97,12 @@ export default function page() {
   const countSold = properties.filter((p) => p.status === "SOLD").length;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 dir-rtl" dir="rtl">
+    <div className="min-h-screen p-4 md:p-8 dir-rtl" dir="rtl">
       {/* Header Section */}
       <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 md:text-3xl font-cairo">لوحة تحكم الإدارة</h1>
-          <p className="text-sm text-muted-foreground mt-1 text-slate-500">إدارة طلبات وإعلانات عقارات بني سويف</p>
+          <h1 className="text-2xl font-bold  md:text-3xl font-cairo">لوحة تحكم الإدارة</h1>
+          <p className="text-sm text-muted-foreground mt-1 ">إدارة طلبات وإعلانات عقارات بني سويف</p>
         </div>
         <div className="flex items-center gap-2 self-start bg-blue-50 text-blue-800 px-4 py-2 rounded-lg font-medium text-sm">
           <Building2 className="w-4 h-4" />
@@ -111,7 +111,7 @@ export default function page() {
       </div>
 
       {/* Custom Responsive Tabs (Shadcn UI Style natively coded) */}
-      <div className="flex border-b border-slate-200 gap-2 mb-6 overflow-x-auto pb-1">
+      <div className="flex border-b gap-2 mb-6 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveTab("PENDING")}
           className={`flex items-center gap-2 pb-3 px-4 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${

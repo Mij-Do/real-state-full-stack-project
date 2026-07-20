@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react"; 
 import { ModeToggle } from "@/components/ui/modeToggle"; 
 import { Button } from "./ui/button";
-import { Plus } from 'lucide-react';
+import { AddPropertyDialog } from "./AddPropertyDialog";
 
 const NAV_LINKS = [
     { title: "Home", path: "/" },
@@ -25,7 +25,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-16">
                 
                 {/* Logo Section */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                     <Link href="/" className="flex items-center">
                         Real-State 
                     </Link>
@@ -38,20 +38,20 @@ export default function Navbar() {
                             <Link
                                 key={link.path}
                                 href={link.path}
-                                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
+                                className="text-sm font-medium text-primary hover:text-foreground transition-colors duration-200"
                             >
                                 {link.title}
                             </Link>
                         ))}
                     </div>
-                    <Button> <Plus /> Add Unit</Button>
+                    <AddPropertyDialog />
                     <ModeToggle />
                 </div>
 
                 {/* Mobile Menu Button */}
                 <div className="md:hidden flex items-center space-x-2">
                     <ModeToggle /> 
-                    <Button> <Plus /> Add Unit</Button>
+                    <AddPropertyDialog />
                     <Button
                         onClick={toggleMenu}
                         type="button"
@@ -63,7 +63,6 @@ export default function Navbar() {
                         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                     </Button>
                 </div>
-
                 </div>
             </div>
 
@@ -77,12 +76,12 @@ export default function Navbar() {
                 <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     {NAV_LINKS.map((link) => (
                         <Link
-                        key={link.path}
-                        href={link.path}
-                        onClick={closeMenu}
-                        className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                            key={link.path}
+                            href={link.path}
+                            onClick={closeMenu}
+                            className="block px-3 py-2 rounded-md text-base font-medium text-primary hover:bg-accent hover:text-accent-foreground transition-colors"
                         >
-                        {link.title}
+                            {link.title}
                         </Link>
                     ))}
                 </div>

@@ -1,27 +1,48 @@
 "use server";
 
-import { prisma } from "@/lib/prisma"; 
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD";
 
-export async function getPropertiesByStatus(status: "PENDING" | "APPROVED" | "SOLD") {
+export async function getPropertiesByStatus(status: PropertyStatus = "PENDING") {
     try {
-        return await prisma.property.findMany({
-        where: { status },
-        orderBy: { createdAt: "desc" },
+        const properties = await prisma.property.findMany({
+            where: { status },
+            orderBy: { createdAt: "desc" },
         });
+
+        return properties.map((property) => ({
+            ...property,
+            createdAt: property.createdAt.toISOString(),
+            updatedAt: property.updatedAt.toISOString(),
+        }));
     } catch (error) {
         console.error("Failed to fetch properties:", error);
         return [];
     }
 }
 
+export async function addProperty(property: {title: string, description: string, type: string, price: number, isNegotiable: boolean, ownerName: string, ownerNumber: string, images: string[]}) {
+    await prisma.property.create({
+        data: {
+            title: property.title,
+            description: property.description,
+            type: property.type,
+            price: property.price,
+            isNegotiable: property.isNegotiable,
+            ownerName: property.ownerName,
+            ownerPhone: property.ownerNumber,
+            images: property.images,
+        }
+    })
+}
 
 export async function approveProperty(id: string) {
     try {
         await prisma.property.update({
-        where: { id },
-        data: { status: "APPROVED" },
+            where: { id },
+            data: { status: "APPROVED" },
         });
         revalidatePath("/admin/dashboard"); 
         return { success: true };

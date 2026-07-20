@@ -9,7 +9,6 @@ async function main () {
                 title: faker.internet.username(),
                 description: faker.lorem.text(),
                 type: faker.lorem.text(),
-                address: faker.location.streetAddress(),
                 price: faker.number.float(),
                 ownerName: faker.internet.username(),
                 ownerPhone: faker.phone.number()

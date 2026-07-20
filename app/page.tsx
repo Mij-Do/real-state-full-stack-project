@@ -1,10 +1,14 @@
-import { CardImage } from "@/components/cardDemo";
+import { PropertyCard } from "@/components/cardDemo";
+import { getPropertiesByStatus } from "./actions/properties";
 
+export default async function Home() {
+  const units = await getPropertiesByStatus();
 
-export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <CardImage />
+    <div className="flex flex-col md:flex-row flex-wrap items-center justify-between gap-2 bg-zinc-50 font-sans dark:bg-black">
+      {units.map((unit) => (
+        <PropertyCard key={unit.id} property={unit} />
+      ))}
     </div>
   );
 }

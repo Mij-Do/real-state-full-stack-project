@@ -39,7 +39,7 @@ export default function AddPropertyDialog() {
             isNegotiable: false,
             ownerName: "",
             ownerNumber: "",
-            images: [], // 👈 تم التصليح: مصفوفة فارغة تماماً
+            images: [],   
         },
     });
 
@@ -218,7 +218,9 @@ export default function AddPropertyDialog() {
                     <DialogFooter>
                         <Field orientation="horizontal">
                             <DialogClose render={<Button variant={"destructive"}> Close </Button>} />
-                            <Button type="submit" form="form-rhf-demo">Submit</Button>
+                            <Button type="submit">
+                                Submit
+                            </Button>
                             <Button type="button" variant="secondary" onClick={() => form.reset()}>Reset</Button>
                         </Field>
                     </DialogFooter>

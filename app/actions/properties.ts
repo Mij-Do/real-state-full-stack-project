@@ -73,6 +73,7 @@ export async function declineProperty(id: string) {
         await prisma.property.delete({
             where: { id },
         });
+        revalidatePath("/");
         revalidatePath("/admin/dashboard");
         return { success: true };
     } catch (error) {
@@ -87,6 +88,7 @@ export async function markAsSold(id: string) {
             where: { id },
             data: { status: "SOLD" },
         });
+        revalidatePath("/");
         revalidatePath("/admin/dashboard");
         return { success: true };
     } catch (error) {

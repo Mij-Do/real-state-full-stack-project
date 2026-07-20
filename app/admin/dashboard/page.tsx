@@ -179,7 +179,7 @@ export default function AdminDashboardPage() {
                     <td className="p-4 flex items-center gap-3">
                       <img src={property.images[0] || "/placeholder.png"} alt={property.title} className="w-12 h-12 object-cover rounded-lg border border-slate-100" />
                       <div>
-                        <p className="font-bold text-slate-900 max-w-[280px] truncate">{property.title}</p>
+                        <p className="font-bold text-slate-900 max-w-70 truncate">{property.title}</p>
                       </div>
                     </td>
                     <td className="p-4">

@@ -1,0 +1,1 @@
+type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD";

@@ -3,8 +3,6 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD";
-
 export async function getPropertiesByStatus(status: PropertyStatus = "APPROVED") {
     try {
         const properties = await prisma.property.findMany({

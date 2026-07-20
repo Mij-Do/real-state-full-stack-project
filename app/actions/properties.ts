@@ -59,6 +59,7 @@ export async function approveProperty(id: string) {
             where: { id },
             data: { status: "APPROVED" },
         });
+        revalidatePath("/");
         revalidatePath("/admin/dashboard"); 
         return { success: true };
     } catch (error) {

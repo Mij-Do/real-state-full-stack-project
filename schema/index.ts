@@ -14,7 +14,7 @@ export const formSchema = z.object({
     isNegotiable: z.boolean(),
     ownerName: z.string(),
     ownerNumber: z.string(),
-    images: z.array(z.string()),
+    images: z.array(z.string()).min(1, "برجاء إضافة صورة واحدة على الأقل"),
 });
 
 export type PropertyFormValues = z.infer<typeof formSchema>;

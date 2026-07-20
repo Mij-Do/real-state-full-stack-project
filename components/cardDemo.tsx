@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import { MapPin, Phone, MessageCircle } from "lucide-react";
+import { txtLength } from "@/utils/functions";
 
 // تعريف الـ TypeScript Interface المتوافق مع الـ Schema والـ Form
 interface Property {
@@ -46,7 +47,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     }).format(property.price);
 
     return (
-        <Card className="mx-auto w-full max-w-sm overflow-hidden rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+        <Card className="mx-auto w-full max-w-sm overflow-hidden rounded-xl border shadow-sm transition-all hover:shadow-md mt-2">
         
         {/* غلاف العقار مع الـ Badge */}
         <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
@@ -89,7 +90,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             {/* وصف العقار (يعرض في حال وجوده) */}
             {property.description && (
                 <CardDescription className=" line-clamp-2 text-xs pt-1">
-                    {property.description}
+                    {txtLength(property.description, 20)}
                 </CardDescription>
             )}
         </CardHeader>

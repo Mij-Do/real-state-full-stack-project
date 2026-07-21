@@ -98,12 +98,16 @@ export async function markAsSold(id: string) {
 
 export async function deleteProperty(id: string) {
     try {
-        await prisma.property.delete({
+        await prisma.property.update({
             where: { id },
+            data: { status: "DELETED" }, 
         });
+
+        revalidatePath("/");
+        revalidatePath("/admin/dashboard");
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete property:", error);
-        return { success: false, error: "فشل حذف العقار" };
+        console.error("Failed to soft delete property:", error);
+        return { success: false, error: "فشل في حذف العقار" };
     }
 }

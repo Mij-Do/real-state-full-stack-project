@@ -1,1 +1,1 @@
-type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD";
+type PropertyStatus = "PENDING" | "APPROVED" | "DECLINED" | "SOLD" | "DELETED";

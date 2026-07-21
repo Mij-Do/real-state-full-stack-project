@@ -113,7 +113,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                         className="text-xs gap-1 h-9 cursor-pointer"
                         nativeButton={false}
                         render={
-                            <a href={`tel:${property.ownerPhone}`}>
+                            <a href={`tel:${whatsappNumber}`}>
                                 <Phone className="w-3.5 h-3.5" />
                             </a>
                         }

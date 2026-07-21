@@ -160,9 +160,10 @@ export default function AdminDashboardPage() {
                     <span className="text-slate-400 block">السعر:</span>
                     <span className="font-bold text-emerald-600">{property.price.toLocaleString()} ج.م</span>
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <span className="text-slate-400 block">المعلن:</span>
                     <span className="font-medium text-slate-800">{property.ownerName}</span>
+                    <span className="font-medium text-slate-800">{property.ownerPhone}</span>
                   </div>
                 </div>
 

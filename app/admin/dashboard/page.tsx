@@ -1,13 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, X, Handshake, Building2, Phone, MapPin } from "lucide-react";
+import { Check, X, Handshake, Building2, Phone, Trash2, AlertTriangle, Loader2 } from "lucide-react";
 import { 
   getPropertiesByStatus, 
   approveProperty, 
   declineProperty, 
-  markAsSold 
+  markAsSold,
+  deleteProperty 
 } from "@/app/actions/properties";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface Property {
   id: string;
@@ -26,6 +36,10 @@ export default function AdminDashboardPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [activeTab, setActiveTab] = useState<"PENDING" | "APPROVED" | "SOLD">("PENDING");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // 🎯 States خاصة بنادفة تأكيد الحذف
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const fetchProperties = async () => {
     setIsLoading(true);
@@ -53,8 +67,23 @@ export default function AdminDashboardPage() {
     if (res.success) fetchProperties();
   };
 
+  // 🎯 دالة التأكيد والحذف النهائي
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+
+    setIsDeleting(true);
+    const res = await deleteProperty(deletingId);
+    setIsDeleting(false);
+
+    if (res.success) {
+      setDeletingId(null);
+      fetchProperties(); // إعادة جلب البيانات وتحديث الداشبورد
+    }
+  };
+
   return (
     <div className="min-h-screen p-4 md:p-8 dir-rtl" dir="rtl">
+      {/* الهيدر والـ Tabs برضه زي ما هما */}
       <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold md:text-3xl font-cairo">لوحة تحكم الإدارة</h1>
@@ -112,6 +141,7 @@ export default function AdminDashboardPage() {
         </div>
       ) : (
         <>
+          {/* Mobile View */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {properties.map((property) => (
               <div key={property.id} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
@@ -129,12 +159,10 @@ export default function AdminDashboardPage() {
                   <div>
                     <span className="text-slate-400 block">السعر:</span>
                     <span className="font-bold text-emerald-600">{property.price.toLocaleString()} ج.م</span>
-                    {property.isNegotiable && <span className="text-[10px] bg-slate-100 text-slate-600 px-1 rounded mr-1">قابل للتفاوض</span>}
                   </div>
                   <div>
                     <span className="text-slate-400 block">المعلن:</span>
                     <span className="font-medium text-slate-800">{property.ownerName}</span>
-                    <span className="text-[10px] text-slate-500 block">{property.ownerPhone}</span>
                   </div>
                 </div>
 
@@ -155,13 +183,20 @@ export default function AdminDashboardPage() {
                     </button>
                   )}
                   {property.status === "SOLD" && (
-                    <span className="w-full text-center bg-amber-50 text-amber-700 text-xs py-1.5 rounded-lg font-medium">تمت البيعة وأرشفته بنجاح</span>
+                    <div className="flex items-center justify-between w-full gap-2">
+                      <span className="flex-1 text-center bg-amber-50 text-amber-700 text-xs py-2 rounded-lg font-medium">مؤرشف</span>
+                      {/* 🎯 الضغط يفتح الـ Dialog فقط */}
+                      <button onClick={() => setDeletingId(property.id)} className="flex items-center justify-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium py-2 px-3 rounded-lg transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" /> حذف
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
             ))}
           </div>
 
+          {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto bg-white border border-slate-200 rounded-xl shadow-sm">
             <table className="w-full text-right border-collapse">
               <thead>
@@ -189,7 +224,6 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="p-4">
                       <div className="font-bold text-emerald-600">{property.price.toLocaleString()} ج.م</div>
-                      {property.isNegotiable && <span className="text-[10px] bg-slate-100 text-slate-500 px-1 py-0.5 rounded">قابل للتفاوض</span>}
                     </td>
                     <td className="p-4">
                       <div className="font-medium text-slate-900">{property.ownerName}</div>
@@ -215,7 +249,13 @@ export default function AdminDashboardPage() {
                           </button>
                         )}
                         {property.status === "SOLD" && (
-                          <span className="text-xs font-medium text-slate-400 bg-slate-100 py-1 px-3 rounded-lg">تمت العملية ومؤرشف</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-medium text-slate-400 bg-slate-100 py-1.5 px-3 rounded-lg">مؤرشف</span>
+                            {/* 🎯 الضغط يفتح الـ Dialog فقط */}
+                            <button onClick={() => setDeletingId(property.id)} className="flex items-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold py-1.5 px-3 rounded-lg transition-colors">
+                              <Trash2 className="w-3.5 h-3.5" /> حذف
+                            </button>
+                          </div>
                         )}
                       </div>
                     </td>
@@ -226,6 +266,51 @@ export default function AdminDashboardPage() {
           </div>
         </>
       )}
+
+      {/* 🎯 Confirmation Dialog الاحترافي للحذف */}
+      <Dialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="flex flex-col items-center sm:items-start text-center sm:text-right gap-2">
+            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-1">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <DialogTitle className="text-lg font-bold">تأكيد حذف العقار</DialogTitle>
+            <DialogDescription className="text-slate-500 text-sm">
+              هل أنت متأكد من رغبتك في حذف هذا العقار نهائياً؟ هذا الإجراء لا يمكن التراجع عنه وسيمسح العقار تماماً من قاعدة البيانات.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="flex flex-row justify-end gap-2 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeletingId(null)}
+              disabled={isDeleting}
+            >
+              إلغاء
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={isDeleting}
+              className="gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  جاري الحذف...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4" />
+                  حذف نهائي
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

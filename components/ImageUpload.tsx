@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { CldUploadWidget, CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,21 @@ export default function ImageUpload({
     onChange,
     onRemove,
 }: ImageUploadProps) {
+    // 🎯 احتفاظ دائم بأحدث قيمة للمصفوفة لمنع الـ Stale Closure على Vercel
+    const valueRef = useRef(value);
+
+    useEffect(() => {
+        valueRef.current = value;
+    }, [value]);
 
     const handleUploadSuccess = (result: any) => {
         if (result.event === "success" && result.info) {
             const info = result.info as CloudinaryUploadWidgetInfo;
             if (info.secure_url) {
-                // 🎯 نستخدم الدالة المباشرة لتحديث الـ Form فوراً وآمناً
-                onChange([...value, info.secure_url]);
+                const newUrl = info.secure_url;
+                // ندمج الصورة الجديدة مع أحدث مصفوفة متسجلة في الـ Ref
+                const updatedImages = [...valueRef.current, newUrl];
+                onChange(updatedImages);
             }
         }
     };
@@ -52,7 +61,7 @@ export default function ImageUpload({
                 </div>
             )}
 
-            {/* زر الرفع بـ Cloudinary Widget */}
+            {/* زر الرفع */}
             <CldUploadWidget
                 uploadPreset="Real-State"
                 onSuccess={handleUploadSuccess}

@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma"; // أو "@/lib/prisma" حسب تسمية الملف عندك
 import { revalidatePath } from "next/cache";
 
 export async function getPropertiesByStatus(status: PropertyStatus = "APPROVED") {
@@ -93,5 +93,17 @@ export async function markAsSold(id: string) {
         return { success: true };
     } catch (error) {
             return { success: false, error: "فشل في تحديث حالة العقار لمباع" };
+    }
+}
+
+export async function deleteProperty(id: string) {
+    try {
+        await prisma.property.delete({
+            where: { id },
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to delete property:", error);
+        return { success: false, error: "فشل حذف العقار" };
     }
 }

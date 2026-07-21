@@ -16,6 +16,10 @@ interface IFieldProps {
 const items = [
     { label: "شقة", value: "apartment" },
     { label: "فيلا", value: "villa" },
+    { label: "بيت", value: "house" },
+    { label: "عمارة", value: "residential_building" },
+    { label: "برج", value: "tower" },
+    { label: "أرض", value: "land" },
 ]
 
 const SelectPropertyType = ({ field }: IFieldProps) => {

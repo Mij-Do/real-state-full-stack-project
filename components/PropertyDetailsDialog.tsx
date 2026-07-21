@@ -6,6 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { PROPERTY_TYPE_LABELS } from "@/constants";
 import { MapPin, Phone, User, Tag, DollarSign, Calendar, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
@@ -61,9 +62,11 @@ export default function PropertyDetailsDialog({ property, isOpen, onClose }: Pro
                 {/* تفاصيل العقار */}
                 <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl text-sm">
                     <div className="flex items-center gap-2 text-slate-700">
-                    <Tag className="w-4 h-4" />
-                    <span>النوع: </span>
-                    <span className="font-bold">{property.type === "villa" ? "فيلا" : "شقة"}</span>
+                        <Tag className="w-4 h-4" />
+                        <span>النوع: </span>
+                        <span className="font-bold">
+                            {PROPERTY_TYPE_LABELS[property.type] || property.type}
+                        </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-slate-700">
@@ -111,7 +114,7 @@ export default function PropertyDetailsDialog({ property, isOpen, onClose }: Pro
                     </div>
                     <div className="flex items-center gap-2 font-medium">
                         <Phone className="w-4 h-4 text-blue-600" />
-                        <span>الهاتف: {property.ownerPhone}</span>
+                        <span>الهاتف: 01002992233</span>
                     </div>
                     </div>
                 </div>

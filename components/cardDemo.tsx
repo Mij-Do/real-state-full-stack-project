@@ -38,7 +38,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
     // تجهيز رابط الصورة الأولى للعرض كغلاف للكارد
     const coverImageUrl = property.images?.[0] || "/placeholder-property.jpg";
 
-    const waPhoneNumber = property.ownerPhone.replace(/[^0-9]/g, "");
+    const waPhoneNumber = '01002992233';
     const whatsappNumber = waPhoneNumber.startsWith("2") ? waPhoneNumber : `2${waPhoneNumber}`;
 
     // تنسيق السعر بالجنيه المصري بطريقة مريحة للعين (مثال: 550,000 ج.م)

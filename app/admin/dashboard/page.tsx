@@ -162,8 +162,10 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-slate-400 block">المعلن:</span>
-                    <span className="font-medium text-slate-800">{property.ownerName}</span>
-                    <span className="font-medium text-slate-800">{property.ownerPhone}</span>
+                    <div className="text-xs text-slate-400 flex flex-col gap-1 mt-0.5">
+                        <span className="font-medium text-slate-800">{property.ownerName}</span>
+                        <span className="flex items-center gap-2"> {property.ownerPhone} <Phone className="w-3 h-3" /> </span>
+                    </div>
                   </div>
                 </div>
 

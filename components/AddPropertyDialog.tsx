@@ -211,9 +211,9 @@ export default function AddPropertyDialog() {
                                     <FieldLabel>صور العقار</FieldLabel>
                                     <ImageUpload
                                         value={field.value || []}
-                                        onChange={(urlArray) => field.onChange(urlArray)}
+                                        onChange={(newUrls) => field.onChange(newUrls)}
                                         onRemove={(urlToRemove) =>
-                                            field.onChange(field.value.filter((url) => url !== urlToRemove))
+                                            field.onChange((field.value || []).filter((url) => url !== urlToRemove))
                                         }
                                     />
                                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
